@@ -54,6 +54,25 @@ resource "aws_instance" "web" {
   }
 }
 
+resource "aws_ebs_volume" "disk1" {
+  availability_zone = "us-east-1c"
+  type              = "gp3"
+  size              = 10
+
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
+
+  # terraform import aws_ebs_volume.disk1 vol-085e0836c46019a87
+
+}
+
+resource "aws_volume_attachment" "disk1" {
+  device_name = "/dev/sdb"
+  volume_id   = aws_ebs_volume.disk1.id
+  instance_id = aws_instance.web.id
+}
+
 module "security_group" {
   source = "../terraform-module-securitygroup"
 
